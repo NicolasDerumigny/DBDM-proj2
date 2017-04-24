@@ -6,6 +6,8 @@ import tweepy
 from tweepy import OAuthHandler
 import json
 
+NUMBER_CANDIDATS=11
+
 list_candidats=["JLMelenchon",
 	"PhilippePoutou",
 	"FrancoisFillon",
@@ -17,6 +19,18 @@ list_candidats=["JLMelenchon",
 	"jeanlassalle",
 	"UPR_Asselineau",
 	"dupontaignan"]
+
+candidat_to_id={"JLMelenchon":0,
+	"PhilippePoutou": 1,
+	"FrancoisFillon": 2,
+	"JCheminade": 3,
+	"benoithamon": 4,
+	"n_arthaud": 5,
+	"MLP_officiel": 6,
+	"EmmanuelMacron": 7,
+	"jeanlassalle": 8,
+	"UPR_Asselineau": 9,
+	"dupontaignan": 10}
 
 data=dict()
 
@@ -40,11 +54,42 @@ def collect_data():
 		 file.close()
 
 def main():
+	##### LOADING DATA #####
 	for candidat in list_candidats:
 		myfile=open("../data_proj2/" + candidat + ".json")
-		print(candidat)
-		data[candidat]=json.load(myfile, "UTF-8")
+		print("Loading: " + candidat)
+		data[candidat]=json.load(myfile)
+	print("Loaded!\n\n\n")
 
+
+	##### DATA MINING #####
+	freq_words_by_candidat=[dict() for i in list_candidats]
+	nb_words_by_candidat=[0 for i in list_candidats]
+	for candidat in range(NUMBER_CANDIDATS) :
+		nb_words_by_candidat[candidat]=0
+		num_tweet=data[list_candidats[candidat]]["nb"]
+		for tweet_id in range(num_tweet):
+			tweet=data[list_candidats[candidat]]["tweets"][tweet_id]["full_text"]
+			for carac in ";.?![],():/\"'’#@":
+				tweet=tweet.replace(carac ," ")
+			words=tweet.lower().split()
+			for word in words :
+				if len(word)>4 and word not in {"notre", "votre", "https", "faire", "cette"}:
+
+					nb_words_by_candidat[candidat]+=1
+					if word in freq_words_by_candidat[candidat] :
+						freq_words_by_candidat[candidat][word]+=1
+					else:
+						freq_words_by_candidat[candidat][word]=1
+				
+	for candidat in range(NUMBER_CANDIDATS):
+		sorted_words=sorted(freq_words_by_candidat[candidat].items(), key=lambda t: t[1])
+		print("Candidat {}: ".format(list_candidats[candidat]))
+		for i in range(1,11):
+			print("\t {} with freq {}%".format(sorted_words[-i][0], sorted_words[-i][1]*100/nb_words_by_candidat[candidat]))
+	
+	
+	
 if __name__=="__main__":
 	#collect_data()
 	main()

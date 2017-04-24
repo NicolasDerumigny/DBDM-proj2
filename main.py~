@@ -1,0 +1,50 @@
+#!/usr/bin/env  python
+import sklearn as sk
+import numpy as np
+import matplotlib.pyplot as plt
+import tweepy
+from tweepy import OAuthHandler
+import json
+
+list_candidats=["JLMelenchon",
+	"PhilippePoutou",
+	"FrancoisFillon",
+	"JCheminade",
+	"benoithamon",
+	"n_arthaud",
+	"MLP_officiel",
+	"EmmanuelMacron",
+	"jeanlassalle",
+	"UPR_Asselineau",
+	"dupontaignan"]
+
+data=dict()
+
+
+def collect_data():
+	consumer_key = 'neYds1jpNT2b9HKqd80A7fsXi'
+	consumer_secret = 'd7loWWSA3EV8yIjfP18VAL7eysH7eCvZNAGzIom1dBif85vdpS'
+	access_token = '848790876-RnPsJCHGSqAx4qeY3lYp92q3dimjrWXidb5vhmr7'
+	access_secret = 'YSjVnF5R18IOO0wmYrEtTrVu2MzkuUg9nDdaMl0qkge2H'
+	 
+	auth = OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_secret)
+	 
+	api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
+	
+	for candidat in list_candidats:
+		 file=open(candidat+".dat","w+")
+		 data[candidat]=api.user_timeline(candidat)
+		 print(type(api.user_timeline(candidat)))
+		 file.write(str(data[candidat]))
+		 file.close()
+
+def main():
+	for candidat in list_candidats:
+		myfile=open(""candidat + ".json")
+		print(candidat)
+		data[candidat]=json.load(myfile, "UTF-8")
+
+if __name__=="__main__":
+	#collect_data()
+	main()

@@ -1,14 +1,21 @@
 #!/usr/bin/env  python3
-import sklearn as sk
+#import sklearn as sk
 import numpy as np
 import matplotlib.pyplot as plt
-import tweepy
-from tweepy import OAuthHandler
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.cluster import AgglomerativeClustering
+import numpy as np
+#import tweepy
+#from tweepy import OAuthHandler
 import json
+import sys
+from datetime import datetime
 
-NUMBER_CANDIDATS=11
 
-list_candidats=["JLMelenchon",
+NUMBER_CANDIDATES=11
+
+id_to_candidates=["JLMelenchon",
 	"PhilippePoutou",
 	"FrancoisFillon",
 	"JCheminade",
@@ -20,7 +27,19 @@ list_candidats=["JLMelenchon",
 	"UPR_Asselineau",
 	"dupontaignan"]
 
-candidat_to_id={"JLMelenchon":0,
+id_to_candidates_pretty=["Melenchon",
+	"Poutou",
+	"Fillon",
+	"Cheminade",
+	"Hamon",
+	"Arthaud",
+	"Le Pen",
+	"Macron",
+	"Lassalle",
+	"Asselineau",
+	"Dupont-Aignan"]
+
+candidate_to_id={"JLMelenchon":0,
 	"PhilippePoutou": 1,
 	"FrancoisFillon": 2,
 	"JCheminade": 3,
@@ -33,7 +52,10 @@ candidat_to_id={"JLMelenchon":0,
 	"dupontaignan": 10}
 
 data=dict()
-
+freq_words=[dict() for i in id_to_candidates]
+nb_words=[0 for i in id_to_candidates]
+hashtag=[dict() for i in id_to_candidates]
+nb_hash=[0 for i in id_to_candidates]
 
 def collect_data():
 	consumer_key = 'neYds1jpNT2b9HKqd80A7fsXi'
@@ -46,50 +68,171 @@ def collect_data():
 	 
 	api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
 	
-	for candidat in list_candidats:
-		 file=open(candidat+".dat","w+")
-		 data[candidat]=api.user_timeline(candidat)
-		 print(type(api.user_timeline(candidat)))
-		 file.write(str(data[candidat]))
+	for candidate in id_to_candidates:
+		 file=open(candidate+".dat","w+")
+		 data[candidate]=api.user_timeline(candidate)
+		 print(type(api.user_timeline(candidate)))
+		 file.write(str(data[candidate]))
 		 file.close()
 
+
 def main():
-	##### LOADING DATA #####
-	for candidat in list_candidats:
-		myfile=open("../data_proj2/" + candidat + ".json")
-		print("Loading: " + candidat)
-		data[candidat]=json.load(myfile)
-	print("Loaded!\n\n\n")
+	load_data()
+	load_num_freq_candidate("Mon Apr 03 05:48:24 +0000 2017", "Mon Apr 03 05:48:24 +0000 2017")
+	dst=[]
+	dst_hash=[]
+	for i in range(NUMBER_CANDIDATES):
+		dst+=[[]]
+		dst_hash+=[[]]
+	for candidate1 in range(NUMBER_CANDIDATES):
+		for candidate2 in range(NUMBER_CANDIDATES):
+			dst[candidate1]+=[compute_distance(candidate1, candidate2)]
+			dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2)]
+
+	print_clustering(dst, dst_hash, 2)
 
 
-	##### DATA MINING #####
-	freq_words_by_candidat=[dict() for i in list_candidats]
-	nb_words_by_candidat=[0 for i in list_candidats]
-	for candidat in range(NUMBER_CANDIDATS) :
-		nb_words_by_candidat[candidat]=0
-		num_tweet=data[list_candidats[candidat]]["nb"]
+
+
+
+def load_data():
+	print("Loading", end="")
+	sys.stdout.flush()
+	for candidate in id_to_candidates:
+		myfile=open("../data_proj2/" + candidate + ".json")
+		print(".", end="")
+		sys.stdout.flush()
+		data[candidate]=json.load(myfile)
+	print("\nLoaded!\n")
+	return 0
+
+def load_num_freq_candidate(time_min, time_max):
+	time_max=datetime.strptime(time_max, '%a %b %d %H:%M:%S %z %Y')
+	time_min=datetime.strptime(time_min, '%a %b %d %H:%M:%S %z %Y')
+	for candidate in range(NUMBER_CANDIDATES) :
+		nb_words[candidate]=0
+		num_tweet=data[id_to_candidates[candidate]]["nb"]
 		for tweet_id in range(num_tweet):
-			tweet=data[list_candidats[candidat]]["tweets"][tweet_id]["full_text"]
-			for carac in ";.?![],():/\"'’#@":
+			time=datetime.strptime(data[id_to_candidates[candidate]]["tweets"][tweet_id]["created_at"], '%a %b %d %H:%M:%S %z %Y')
+			if time>time_max or time<time_min:
+				print(time)
+				continue
+			tweet=data[id_to_candidates[candidate]]["tweets"][tweet_id]["full_text"]
+			for carac in ";.?![],():/\"'’@":
 				tweet=tweet.replace(carac ," ")
 			words=tweet.lower().split()
 			for word in words :
+				if word[0]=='#':
+					if word in hashtag[candidate]:
+						hashtag[candidate][word]+=1
+					else:
+						hashtag[candidate][word]=1
+					nb_hash[candidate]+=1
+
 				if len(word)>4 and word not in {"notre", "votre", "https", "faire", "cette"}:
 
-					nb_words_by_candidat[candidat]+=1
-					if word in freq_words_by_candidat[candidat] :
-						freq_words_by_candidat[candidat][word]+=1
+					nb_words[candidate]+=1
+					if word in freq_words[candidate]:
+						freq_words[candidate][word]+=1
 					else:
-						freq_words_by_candidat[candidat][word]=1
-				
-	for candidat in range(NUMBER_CANDIDATS):
-		sorted_words=sorted(freq_words_by_candidat[candidat].items(), key=lambda t: t[1])
-		print("Candidat {}: ".format(list_candidats[candidat]))
-		for i in range(1,11):
-			print("\t {} with freq {}%".format(sorted_words[-i][0], sorted_words[-i][1]*100/nb_words_by_candidat[candidat]))
-	
-	
-	
+						freq_words[candidate][word]=1
+	return 0
+
+def most_frequent(nb):			
+	for candidate in range(NUMBER_CANDIDATES):
+		sorted_words=sorted(freq_words[candidate].items(), key=lambda t: t[1])
+		sorted_hash=sorted(hashtag[candidate].items(), key=lambda t: t[1])
+		print("candidate {}: ".format(id_to_candidates[candidate]))
+		for i in range(1,nb+1):
+			print("({} word): {} with freq {}%".format(i, sorted_words[-i][0], sorted_words[-i][1]*100/nb_words[candidate]))
+			print("({} hash): {} with freq {}%".format(i, sorted_hash[-i][0], sorted_hash[-i][1]*100/nb_hash[candidate]))
+
+def compute_distance(candidate1, candidate2):
+	# Get the proportion of words of candidate1 and cadidat2 that
+	# are not in common
+	sum_dif_words12=0 
+	for key, data in freq_words[candidate1].items():
+		if key not in freq_words[candidate2]:
+			sum_dif_words12+=data
+	sum_dif_words21=0
+	for key, data in freq_words[candidate2].items():
+		if key not in freq_words[candidate1]:
+			sum_dif_words21+=data
+
+	return (sum_dif_words21/nb_words[candidate2] + sum_dif_words12/nb_words[candidate1])/2
+
+
+def compute_hashtag_distance(candidate1, candidate2):
+	# Get the proportion of hashtags of candidate1 and cadidat2 that
+	# are not in common
+	sum_dif_words12=0 
+	for key, data in hashtag[candidate1].items():
+		if key not in hashtag[candidate2]:
+			sum_dif_words12+=data
+	sum_dif_words21=0
+	for key, data in hashtag[candidate2].items():
+		if key not in hashtag[candidate1]:
+			sum_dif_words21+=data
+
+	return (sum_dif_words21/nb_hash[candidate2] + sum_dif_words12/nb_hash[candidate1])/2
+
+def show_distance():
+	x=[0]*NUMBER_CANDIDATES
+	y=[0]*NUMBER_CANDIDATES
+	for i in range(NUMBER_CANDIDATES):
+		x[i]=sum(dst[i])
+		y[i]=sum(dst_hash[i])
+	plt.scatter(x,y, color='blue')
+	for i in range(NUMBER_CANDIDATES):
+	    plt.annotate(
+	        id_to_candidates_pretty[i],
+	        xy=(x[i], y[i]), xytext=(-5, 5),
+	        textcoords='offset points', ha='right', va='bottom',
+	        bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
+	        arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
+	plt.show()
+
+
+def print_clustering(dst, dst_hash, nbclusters):
+	print("kMeans:")
+	cluster = KMeans(n_clusters=nbclusters, random_state=0).fit(dst)
+	cluster_hash = KMeans(n_clusters=nbclusters, random_state=0).fit(dst_hash)
+	print("Words:")
+	for i in range(nbclusters):
+		print("Class {}:".format(i), end="")
+		for j in range(NUMBER_CANDIDATES):
+			if cluster.labels_[j]==i:
+				print(" "+id_to_candidates_pretty[j], end="")
+		print()
+
+	print("\nHashes:")
+	for i in range(nbclusters):
+		print("Class {}:".format(i), end="")
+		for j in range(NUMBER_CANDIDATES):
+			if cluster_hash.labels_[j]==i:
+				print(" "+id_to_candidates_pretty[j], end="")
+		print()
+
+	print("Hierarchical clustering:")
+	cluster = AgglomerativeClustering(n_clusters=nbclusters).fit(dst)
+	cluster_hash = AgglomerativeClustering(n_clusters=nbclusters).fit(dst_hash)
+	print("Words:")
+	for i in range(nbclusters):
+		print("Class {}:".format(i), end="")
+		for j in range(NUMBER_CANDIDATES):
+			if cluster.labels_[j]==i:
+				print(" "+id_to_candidates_pretty[j], end="")
+		print()
+
+	print("\nHashes:")
+	for i in range(nbclusters):
+		print("Class {}:".format(i), end="")
+		for j in range(NUMBER_CANDIDATES):
+			if cluster_hash.labels_[j]==i:
+				print(" "+id_to_candidates_pretty[j], end="")
+		print()
+
+
 if __name__=="__main__":
 	#collect_data()
 	main()

@@ -9,6 +9,7 @@
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
+\setlength\parindent{0pt}
 
 \lstset{ %
   backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
@@ -59,61 +60,72 @@
 
 
 \section{Introduction}
-\begin{frame}
+\begin{frame}{Introduction}
 \begin{itemize}
-\item tweets of the 11 French presidential election candidates.
-\item work in Python, use of
+\item Dataset: tweets of the 11 French presidential election candidates.
+\item Language: Python
+\item Package: Sklearn, Numpy, Matplotlib
 \end{itemize}
 
 \end{frame}
 
-
-\begin{frame}{Preprocessing}
-\begin{block}{}
+\begin{frame}{Working on words}
+\begin{block}{Preprocessing}
 \begin{itemize}
-\item use only relevant words.
-\item distinguish hashtags with words.
+\item Keep only relevant words $\to$ words whith more than 5 letters.
+\item Distinguish hashtags with words.
+\item Find common points between candidates without semantic analysis
 \end{itemize}
 \end{block}
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Simple Data}
 Compute the most used words for a given candidate.
 %inclure les mots les plus utilises de qq'un, Poutou?
 \end{frame}
 
 
 \section{Distance}
-\begin{frame}{Distance between two set of tweets:}
-\begin{block}{}
+\begin{frame}{Distance between tweets}
+\begin{block}{Distance of sets of words}
+Measure the proportion of words that are different between two set of words $S_1$ and $S_2$:
 \[
-d(set1, set2)=\frac{1}{2}\cdot(\sum_{word \in set1, word \notin set2}(freq(word)+(\sum_{word \in set2, word \notin set1}(freq(word))) 
+d(S_1, S_2)= \frac{1}{2} \cdot \Big( \sum_{w \in S_1, w \notin S_2}f(w) \quad + \sum_{w \in S_2, w \notin S_1} f(w) \Big) 
 \]
 \end{block}
 \end{frame}
 
 \begin{frame}{Distance between two candidates}
-\begin{block}{}
-%graphique projete selon deux candidats
-\end{block}
+\begin{figure}
+
+
+\caption{Distance between candidates, projected on the distance with ??? on $x$ and the distance with ??? on $y$}
+\end{figure}
+\begin{itemize}
+\item result in a 11-dimensional space
+\end{itemize}
 \end{frame}
 
-\section{Clustering}
+\section{Data Mining}
 \begin{frame}{Kmeans}
-\begin{block}{}
-Clustering candidates by similarities between used words, or tweets.
-%inclure des partitions
-\end{block}
+\begin{figure}{}
+\begin{tabular}{| c | c | c |}
+
+\end{tabular}
+\caption{Clustering candidates by similarities between used words and hashtags.}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Hierarchical clustering}
-\begin{block}{}
-Can do the same by using Hierarchical clustering.
-\end{block}
+\begin{figure}{}
+\begin{tabular}{| c | c | c |}
+%TODO 
+\end{tabular}
+\caption{Clustering candidates by similarities between used words and hashtags.}
+\end{figure}
 \end{frame}
 
-\section{Evolution}
-\begin{frame}{Time}
+\begin{frame}{Evolution over time}
 \begin{block}{}
 Cluster the candidates for some time periods:
 \begin{itemize}
@@ -124,30 +136,39 @@ Cluster the candidates for some time periods:
 \end{block}
 \end{frame}
 
-\section{???}
-\begin{frame}{A pirori algorithm}
-\begin{block}{}
-Compute for each candidates the frequent words patterns. 
+\begin{frame}{A priori algorithm}
+\begingroup
+\fontsize{9pt}{12pt}
+\texttt{\\
+Rule: ('\#fillon',) $\to$ ('français', 'dupontaignan') , 0.149\\
+Rule: ('\#fillon', 'dlf\_officiel') $\to$ ('\#macron',) , 0.222\\
+Rule: ('\#fillon', 'dlf\_officiel') $\to$ ('dupontaignan',) , 0.988\\
+Rule: ('\#le79inter',) $\to$ ('dupontaignan',) , 1.000\\
+Rule: ('\#legrandjury',) $\to$ ('dupontaignan',) , 1.000\\
+...\\
+Rule: ('judiciaire',) $\to$ ('casier',) , 0.937\\
+Rule: ('judiciaire',) $\to$ ('vierge',) , 0.875\\
+Rule: ('judiciaire',) $\to$ ('vierge', 'casier') , 0.875\\
+Rule: ('élection',) $\to$ ('dupontaignan', 'dlf\_officiel') , 0.556\\
+}
+\endgroup
 
-\end{block}
+
+\begin{itemize}
+\item Lots of auto-citations
+\item Very few real political expressions, except "Front National"
+\end{itemize}
 \end{frame}
+
 
 \section{Conclusion}
-\begin{frame}{Difficulties}
-\begin{block}{}
-\begin{itemize}
-\item 
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}{End}
+\begin{frame}{Conclusion}
 \begin{center}
-Thant you for your listening. 
-
-
+Thank you for listening. 
 \bigskip
-Does anybody have any question?
+
+
+Does anybody have questions?
 \end{center}
 \end{frame}
  

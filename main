@@ -9,10 +9,9 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 #from tweepy import OAuthHandler
 import json
 import sys
-import apriori
 from datetime import datetime
 from itertools import combinations
-import pandas as pd
+import apriori as ap
 
 
 
@@ -80,8 +79,9 @@ def main():
 	load_data()
 	# mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
-	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
+	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
 def mining_from_time_partition(date):	
 	for period in range(len(date)-1):
@@ -95,8 +95,10 @@ def mining_from_time_partition(date):
 		dst=[]
 		dst_hash=[]
 		for i in range(NUMBER_CANDIDATES):
-			rules, itemset = apriori.apriori(lst_tweet[i])
-			apriori.print_report(rules, itemset)
+			items, rules=ap.runApriori(lst_tweet[i], 0.01, 0.1)
+			print()
+			print(id_to_candidates_pretty[i])
+			ap.printResults(items, rules)
 		# 	dst+=[[]]
 		# 	dst_hash+=[[]]
 		# for candidate1 in range(NUMBER_CANDIDATES):
@@ -104,7 +106,7 @@ def mining_from_time_partition(date):
 		# 		dst[candidate1]+=[compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
 		# 		dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
 
-		print_clustering(dst, dst_hash, 2)
+		#print_clustering(dst, dst_hash, 2)
 
 
 
@@ -136,10 +138,10 @@ def load_num_freq_candidate(time_min, time_max, freq_words, nb_words, hashtag, n
 			
 			charged+=1
 			tweet=data[id_to_candidates[candidate]]["tweets"][tweet_id]["full_text"]
-			lst_cand+=[tweet]
 			for carac in ";.?![],():/\"'’@":
 				tweet=tweet.replace(carac ," ")
 			words=tweet.lower().split()
+			tweet_interesting_words=[]
 			for word in words :
 				if word[0]=='#':
 					if word in hashtag[candidate]:
@@ -149,12 +151,14 @@ def load_num_freq_candidate(time_min, time_max, freq_words, nb_words, hashtag, n
 					nb_hash[candidate]+=1
 
 				if len(word)>4 and word not in {"notre", "votre", "https", "faire", "cette"}:
-
+					tweet_interesting_words+=[word]
 					nb_words[candidate]+=1
 					if word in freq_words[candidate]:
 						freq_words[candidate][word]+=1
 					else:
 						freq_words[candidate][word]=1
+
+			lst_cand+=[tweet_interesting_words]
 		lst_tweet+=[lst_cand]
 	#print(charged)
 	return 0
@@ -252,6 +256,9 @@ def print_clustering(dst, dst_hash, nbclusters):
 			if cluster_hash.labels_[j]==i:
 				print(" "+id_to_candidates_pretty[j], end="")
 		print()
+
+
+
 
 if __name__=="__main__":
 	#collect_data()

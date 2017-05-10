@@ -1,2 +1,8 @@
 \beamer@endinputifotherversion {3.36pt}
 \select@language {english}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Distance}{5}{0}{2}
+\beamer@sectionintoc {3}{Clustering}{7}{0}{3}
+\beamer@sectionintoc {4}{Evolution}{9}{0}{4}
+\beamer@sectionintoc {5}{???}{10}{0}{5}
+\beamer@sectionintoc {6}{Conclusion}{11}{0}{6}

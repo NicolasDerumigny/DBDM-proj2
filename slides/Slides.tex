@@ -40,7 +40,7 @@
 
 \usetheme{ENSLyon} 
 
-\title[DBDM-Project 2]{Title}
+\title[DM-Project 2]{French Presidential Election Candidates Tweets}
 \author[E. Kerinec and N. Derumigny]{Emma Kerinec \and Nicolas Derumigny}
 \institute[]{ENS Lyon}
 \date{11 May 2017}
@@ -48,11 +48,7 @@
 
 \usecolortheme{ENSLyon_blue}
 
-
-
 \begin{document}
-
-
 
 \begin{frame}
 	\titlepage
@@ -62,9 +58,97 @@
 
 
 
-
 \section{Introduction}
+\begin{frame}
+\begin{itemize}
+\item tweets of the 11 French presidential election candidates.
+\item work in Python, use of
+\end{itemize}
+
+\end{frame}
 
 
+\begin{frame}{Preprocessing}
+\begin{block}{}
+\begin{itemize}
+\item use only relevant words.
+\item distinguish hashtags with words.
+\end{itemize}
+\end{block}
+\end{frame}
 
+\begin{frame}
+Compute the most used words for a given candidate.
+%inclure les mots les plus utilises de qq'un, Poutou?
+\end{frame}
+
+
+\section{Distance}
+\begin{frame}{Distance between two set of tweets:}
+\begin{block}{}
+\[
+d(set1, set2)=\frac{1}{2}\cdot(\sum_{word \in set1, word \notin set2}(freq(word)+(\sum_{word \in set2, word \notin set1}(freq(word))) 
+\]
+\end{block}
+\end{frame}
+
+\begin{frame}{Distance between two candidates}
+\begin{block}{}
+%graphique projete selon deux candidats
+\end{block}
+\end{frame}
+
+\section{Clustering}
+\begin{frame}{Kmeans}
+\begin{block}{}
+Clustering candidates by similarities between used words, or tweets.
+%inclure des partitions
+\end{block}
+\end{frame}
+
+\begin{frame}{Hierarchical clustering}
+\begin{block}{}
+Can do the same by using Hierarchical clustering.
+\end{block}
+\end{frame}
+
+\section{Evolution}
+\begin{frame}{Time}
+\begin{block}{}
+Cluster the candidates for some time periods:
+\begin{itemize}
+\item before and after the begining presidential campaign
+\item during the first and the second part of the presidential campaign
+%mettre des valeurs
+\end{itemize}
+\end{block}
+\end{frame}
+
+\section{???}
+\begin{frame}{A pirori algorithm}
+\begin{block}{}
+Compute for each candidates the frequent words patterns. 
+
+\end{block}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Difficulties}
+\begin{block}{}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{End}
+\begin{center}
+Thant you for your listening. 
+
+
+\bigskip
+Does anybody have any question?
+\end{center}
+\end{frame}
+ 
 \end{document}

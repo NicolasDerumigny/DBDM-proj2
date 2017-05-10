@@ -2,15 +2,19 @@
 #import sklearn as sk
 import numpy as np
 import matplotlib.pyplot as plt
-import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.cluster import AgglomerativeClustering
-import numpy as np
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 #import tweepy
 #from tweepy import OAuthHandler
 import json
 import sys
+import apriori
 from datetime import datetime
+from itertools import combinations
+import pandas as pd
+
+
 
 
 NUMBER_CANDIDATES=11
@@ -52,10 +56,6 @@ candidate_to_id={"JLMelenchon":0,
 	"dupontaignan": 10}
 
 data=dict()
-freq_words=[dict() for i in id_to_candidates]
-nb_words=[0 for i in id_to_candidates]
-hashtag=[dict() for i in id_to_candidates]
-nb_hash=[0 for i in id_to_candidates]
 
 def collect_data():
 	consumer_key = 'neYds1jpNT2b9HKqd80A7fsXi'
@@ -78,18 +78,33 @@ def collect_data():
 
 def main():
 	load_data()
-	load_num_freq_candidate("Mon Apr 03 05:48:24 +0000 2017", "Mon Apr 03 05:48:24 +0000 2017")
-	dst=[]
-	dst_hash=[]
-	for i in range(NUMBER_CANDIDATES):
-		dst+=[[]]
-		dst_hash+=[[]]
-	for candidate1 in range(NUMBER_CANDIDATES):
-		for candidate2 in range(NUMBER_CANDIDATES):
-			dst[candidate1]+=[compute_distance(candidate1, candidate2)]
-			dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2)]
+	# mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
-	print_clustering(dst, dst_hash, 2)
+	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+
+
+def mining_from_time_partition(date):	
+	for period in range(len(date)-1):
+		freq_words=[dict() for i in id_to_candidates]
+		nb_words=[0 for i in id_to_candidates]
+		hashtag=[dict() for i in id_to_candidates]
+		nb_hash=[0 for i in id_to_candidates]
+		lst_tweet=[]
+		print("\n\n ------- From {} to {} -------\n".format(date[period], date[period+1]))
+		load_num_freq_candidate(date[period], date[period+1], freq_words, nb_words, hashtag, nb_hash, lst_tweet)
+		dst=[]
+		dst_hash=[]
+		for i in range(NUMBER_CANDIDATES):
+			rules, itemset = apriori.apriori(lst_tweet[i])
+			apriori.print_report(rules, itemset)
+		# 	dst+=[[]]
+		# 	dst_hash+=[[]]
+		# for candidate1 in range(NUMBER_CANDIDATES):
+		# 	for candidate2 in range(NUMBER_CANDIDATES):
+		# 		dst[candidate1]+=[compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
+		# 		dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
+
+		print_clustering(dst, dst_hash, 2)
 
 
 
@@ -106,18 +121,22 @@ def load_data():
 	print("\nLoaded!\n")
 	return 0
 
-def load_num_freq_candidate(time_min, time_max):
-	time_max=datetime.strptime(time_max, '%a %b %d %H:%M:%S %z %Y')
-	time_min=datetime.strptime(time_min, '%a %b %d %H:%M:%S %z %Y')
+def load_num_freq_candidate(time_min, time_max, freq_words, nb_words, hashtag, nb_hash, lst_tweet=[]):
+	ntime_max=datetime.strptime(time_max, '%b %d %H:%M:%S %z %Y')
+	ntime_min=datetime.strptime(time_min, '%b %d %H:%M:%S %z %Y')
+	charged=0
 	for candidate in range(NUMBER_CANDIDATES) :
+		lst_cand=[]
 		nb_words[candidate]=0
 		num_tweet=data[id_to_candidates[candidate]]["nb"]
 		for tweet_id in range(num_tweet):
 			time=datetime.strptime(data[id_to_candidates[candidate]]["tweets"][tweet_id]["created_at"], '%a %b %d %H:%M:%S %z %Y')
-			if time>time_max or time<time_min:
-				print(time)
+			if time>ntime_max or time<=ntime_min:
 				continue
+			
+			charged+=1
 			tweet=data[id_to_candidates[candidate]]["tweets"][tweet_id]["full_text"]
+			lst_cand+=[tweet]
 			for carac in ";.?![],():/\"'’@":
 				tweet=tweet.replace(carac ," ")
 			words=tweet.lower().split()
@@ -136,9 +155,11 @@ def load_num_freq_candidate(time_min, time_max):
 						freq_words[candidate][word]+=1
 					else:
 						freq_words[candidate][word]=1
+		lst_tweet+=[lst_cand]
+	#print(charged)
 	return 0
 
-def most_frequent(nb):			
+def most_frequent(nb, freq_words, nb_words, hashtag, nb_hash):			
 	for candidate in range(NUMBER_CANDIDATES):
 		sorted_words=sorted(freq_words[candidate].items(), key=lambda t: t[1])
 		sorted_hash=sorted(hashtag[candidate].items(), key=lambda t: t[1])
@@ -147,7 +168,7 @@ def most_frequent(nb):
 			print("({} word): {} with freq {}%".format(i, sorted_words[-i][0], sorted_words[-i][1]*100/nb_words[candidate]))
 			print("({} hash): {} with freq {}%".format(i, sorted_hash[-i][0], sorted_hash[-i][1]*100/nb_hash[candidate]))
 
-def compute_distance(candidate1, candidate2):
+def compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash):
 	# Get the proportion of words of candidate1 and cadidat2 that
 	# are not in common
 	sum_dif_words12=0 
@@ -162,7 +183,7 @@ def compute_distance(candidate1, candidate2):
 	return (sum_dif_words21/nb_words[candidate2] + sum_dif_words12/nb_words[candidate1])/2
 
 
-def compute_hashtag_distance(candidate1, candidate2):
+def compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash):
 	# Get the proportion of hashtags of candidate1 and cadidat2 that
 	# are not in common
 	sum_dif_words12=0 
@@ -176,7 +197,7 @@ def compute_hashtag_distance(candidate1, candidate2):
 
 	return (sum_dif_words21/nb_hash[candidate2] + sum_dif_words12/nb_hash[candidate1])/2
 
-def show_distance():
+def show_distance(dst, dst_hash):
 	x=[0]*NUMBER_CANDIDATES
 	y=[0]*NUMBER_CANDIDATES
 	for i in range(NUMBER_CANDIDATES):
@@ -184,12 +205,12 @@ def show_distance():
 		y[i]=sum(dst_hash[i])
 	plt.scatter(x,y, color='blue')
 	for i in range(NUMBER_CANDIDATES):
-	    plt.annotate(
-	        id_to_candidates_pretty[i],
-	        xy=(x[i], y[i]), xytext=(-5, 5),
-	        textcoords='offset points', ha='right', va='bottom',
-	        bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
-	        arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
+		plt.annotate(
+			id_to_candidates_pretty[i],
+			xy=(x[i], y[i]), xytext=(-5, 5),
+			textcoords='offset points', ha='right', va='bottom',
+			bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
+			arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
 	plt.show()
 
 
@@ -213,7 +234,7 @@ def print_clustering(dst, dst_hash, nbclusters):
 				print(" "+id_to_candidates_pretty[j], end="")
 		print()
 
-	print("Hierarchical clustering:")
+	print("\n\nHierarchical clustering:")
 	cluster = AgglomerativeClustering(n_clusters=nbclusters).fit(dst)
 	cluster_hash = AgglomerativeClustering(n_clusters=nbclusters).fit(dst_hash)
 	print("Words:")
@@ -231,7 +252,6 @@ def print_clustering(dst, dst_hash, nbclusters):
 			if cluster_hash.labels_[j]==i:
 				print(" "+id_to_candidates_pretty[j], end="")
 		print()
-
 
 if __name__=="__main__":
 	#collect_data()

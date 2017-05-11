@@ -8,3 +8,4 @@ TODO: 	cortana subgroup discovery
 		close patterns
 		sklearn function maps words
 		filter word list
+		look for tweets that fits best a candidate compare to the other

@@ -7,3 +7,4 @@ Second project of the DBDM course - ENS Lyon 2017
 TODO: 	cortana subgroup discovery
 		close patterns
 		sklearn function maps words
+		filter word list

@@ -81,7 +81,18 @@ def main():
 
 	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
-	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	freq_words=[dict() for i in id_to_candidates]
+	nb_words=[0 for i in id_to_candidates]
+	hashtag=[dict() for i in id_to_candidates]
+	nb_hash=[0 for i in id_to_candidates]
+	lst_tweet=[]
+	load_num_freq_candidate("Jan 1 00:00:00 +0000 2012", "May 07 00:00:00 +0000 2017", freq_words, nb_words, hashtag, nb_hash, lst_tweet=[])
+	dst, dst_hash=compute_distances_all(freq_words, nb_words, hashtag, nb_hash)
+	print_clustering(dst, dst_hash, 2)
+
+
+
 
 def mining_from_time_partition(date):	
 	for period in range(len(date)-1):
@@ -108,6 +119,15 @@ def mining_from_time_partition(date):
 
 		#print_clustering(dst, dst_hash, 2)
 
+def compute_distances_all(freq_words, nb_words, hashtag, nb_hash):
+	dst=[[] for i in id_to_candidates]
+	dst_hash=[[] for i in id_to_candidates]
+	for candidate1 in range(NUMBER_CANDIDATES):
+		for candidate2 in range(NUMBER_CANDIDATES):
+			dst[candidate1]+=[compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
+			dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
+
+	return(dst, dst_hash)
 
 
 
@@ -201,12 +221,24 @@ def compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hasht
 
 	return (sum_dif_words21/nb_hash[candidate2] + sum_dif_words12/nb_hash[candidate1])/2
 
-def show_distance(dst, dst_hash):
+def compute_sum_distance_all(freq_words, nb_words, hashtag, nb_hash):
+	dst_sum=[0 for i in id_to_candidates]
+	dst_hash_sum=[0 for i in id_to_candidates]
+	for candidate1 in range(NUMBER_CANDIDATES):
+		for candidate2 in range(NUMBER_CANDIDATES):
+			dst_sum[candidate1]+= compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)
+			dst_hash_sum[candidate1]+=compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)
+	return(dst_sum, dst_hash_sum)
+
+
+
+def show_distance(freq_words, nb_words, hashtag, nb_hash):
 	x=[0]*NUMBER_CANDIDATES
 	y=[0]*NUMBER_CANDIDATES
+	dst_sum, dst_hash_sum = compute_sum_distance_all(freq_words, nb_words, hashtag, nb_hash)
 	for i in range(NUMBER_CANDIDATES):
-		x[i]=sum(dst[i])
-		y[i]=sum(dst_hash[i])
+		x[i]=dst_sum[i]
+		y[i]=dst_hash_sum[i]
 	plt.scatter(x,y, color='blue')
 	for i in range(NUMBER_CANDIDATES):
 		plt.annotate(
@@ -215,6 +247,8 @@ def show_distance(dst, dst_hash):
 			textcoords='offset points', ha='right', va='bottom',
 			bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
 			arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
+		plt.ylabel('Hashtag distance')
+		plt.xlabel("Word distance")
 	plt.show()
 
 

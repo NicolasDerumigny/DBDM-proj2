@@ -80,8 +80,25 @@
 \end{frame}
 
 \begin{frame}{Simple Data}
-Compute the most used words for a given candidate.
-%inclure les mots les plus utilises de qq'un, Poutou?
+Compute the most used words for a given candidate.\\
+
+\begingroup
+\fontsize{8pt}{12pt}
+\texttt{\\
+(1 word): contre with freq 1.253259924659519\\
+(1 hash): \#npa with freq 11.034004163775156\\
+(2 word): gouvernement with freq 0.4998551144595769\\
+(2 hash): \#loitravail with freq 2.9840388619014573\\
+(3 word): travail with freq 0.4563894523326572\\
+(3 hash): \#grèce with freq 1.7349063150589867\\
+(4 word): paris with freq 0.4056795131845842\\
+(4 hash): \#migrants with freq 1.6655100624566272\\
+(5 word): droite with freq 0.3839466821211243\\
+(5 hash): \#poutou2017 with freq 1.457321304649549\\
+(6 word): solidarité with freq 0.3839466821211243\\
+(6 hash): \#hollande with freq 1.179736294240111\\
+}
+\endgroup
 \end{frame}
 
 
@@ -90,49 +107,55 @@ Compute the most used words for a given candidate.
 \begin{block}{Distance of sets of words}
 Measure the proportion of words that are different between two set of words $S_1$ and $S_2$:
 \[
-d(S_1, S_2)= \frac{1}{2} \cdot \Big( \sum_{w \in S_1, w \notin S_2}f(w) \quad + \sum_{w \in S_2, w \notin S_1} f(w) \Big) 
+d(S_1, S_2)= \frac{1}{2} \cdot \Big( \sum_{\substack{w \in S_1\\w \notin S_2}}f(w) \quad + \quad \sum_{\substack{w \in S_2\\w \notin S_1}} f(w) \Big) 
 \]
+with $f(x)$ the frequence of the word x.
 \end{block}
 \end{frame}
 
 \begin{frame}{Distance between two candidates}
 \begin{figure}
 
-%includegraphics[width=\linewidth]{nomdelafigure.jpg}
+\includegraphics[height= 0.6\textheight]{distances.png}
 
-\caption{Distance between candidates, projected on the distance with ??? on $x$ and the distance with ??? on $y$}
+\caption{Sum of the distance to the other candidates, all words on $x$ and hashtags on $y$}
 \end{figure}
-\begin{itemize}
-\item result in a 11-dimensional space
-\end{itemize}
 \end{frame}
 
 \section{Data Mining}
 \begin{frame}{Kmeans}
-\begin{figure}{}
-\begin{tabular}{| c | c | c |}
-
-\end{tabular}
-\caption{Clustering candidates by similarities between used words and hashtags.}
-\end{figure}
+Clustering candidates by similarities between used words and hashtags.
+\bigskip
+\texttt{\\
+Words\\
+Class 0: Poutou Cheminade Arthaud Lassalle Asselineau\\
+Class 1: Melenchon Fillon Hamon Le Pen Macron Dupont-Aignan\\
+\bigskip
+Hashtags\\
+Class: Macron\\
+Class: Melenchon Poutou Fillon Cheminade Hamon Arthaud Le Pen Lassalle Asselineau Dupont-Aignan\\
+}
 \end{frame}
 
 \begin{frame}{Hierarchical clustering}
-\begin{figure}{}
-\begin{tabular}{| c | c | c |}
-%TODO 
-\end{tabular}
-\caption{Clustering candidates by similarities between used words and hashtags.}
-\end{figure}
+\texttt{\\
+Words\\
+Class 0: Poutou Cheminade Arthaud Lassalle Asselineau\\
+Class 1: Melenchon Fillon Hamon Le Pen Macron Dupont-Aignan\\
+\bigskip
+Hashtags\\
+Class: Macron\\
+Class: Melenchon Poutou Fillon Cheminade Hamon Arthaud Le Pen Lassalle Asselineau Dupont-Aignan\\
+}
 \end{frame}
 
 \begin{frame}{Evolution over time}
 \begin{block}{}
 Cluster the candidates for some time periods:
 \begin{itemize}
-\item before and after the begining presidential campaign
-\item during the first and the second part of the presidential campaign
-%mettre des valeurs
+\item before and after the begining presidential campaign.
+\item during the first and the second part of the presidential campaign.
+\item before and after some important event.
 \end{itemize}
 \end{block}
 \end{frame}

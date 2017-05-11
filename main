@@ -77,19 +77,19 @@ def collect_data():
 
 def main():
 	load_data()
-	# mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	#mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
 	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
-	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
-	freq_words=[dict() for i in id_to_candidates]
+	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	"""freq_words=[dict() for i in id_to_candidates]
 	nb_words=[0 for i in id_to_candidates]
 	hashtag=[dict() for i in id_to_candidates]
 	nb_hash=[0 for i in id_to_candidates]
 	lst_tweet=[]
 	load_num_freq_candidate("Jan 1 00:00:00 +0000 2012", "May 07 00:00:00 +0000 2017", freq_words, nb_words, hashtag, nb_hash, lst_tweet=[])
 	dst, dst_hash=compute_distances_all(freq_words, nb_words, hashtag, nb_hash)
-	print_clustering(dst, dst_hash, 2)
+	print_clustering(dst, dst_hash, 2)"""
 
 
 
@@ -113,11 +113,11 @@ def mining_from_time_partition(date):
 		# 	dst+=[[]]
 		# 	dst_hash+=[[]]
 		# for candidate1 in range(NUMBER_CANDIDATES):
-		# 	for candidate2 in range(NUMBER_CANDIDATES):
-		# 		dst[candidate1]+=[compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
-		# 		dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
+		#  	for candidate2 in range(NUMBER_CANDIDATES):
+		#  		dst[candidate1]+=[compute_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
+		#  		dst_hash[candidate1]+=[compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)]
 
-		#print_clustering(dst, dst_hash, 2)
+		# print_clustering(dst, dst_hash, 2)
 
 def compute_distances_all(freq_words, nb_words, hashtag, nb_hash):
 	dst=[[] for i in id_to_candidates]

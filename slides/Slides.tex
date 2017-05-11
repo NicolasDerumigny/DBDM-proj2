@@ -62,8 +62,8 @@
 \section{Introduction}
 \begin{frame}{Introduction}
 \begin{itemize}
-\item Dataset: tweets of the 11 French presidential election candidates.
-\item Language: Python
+\item Dataset: more than 3`000 tweets of the 11 French presidential election candidates.
+\item Language: Python 3
 \item Package: Sklearn, Numpy, Matplotlib
 \end{itemize}
 
@@ -77,28 +77,48 @@
 \item Find common points between candidates without semantic analysis
 \end{itemize}
 \end{block}
+\begin{itemize}
+\item Hard to display on a graph $\to$ need a function $words \to \mathbb{R}$
+\item Harder to see correlations
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Simple Data}
-Compute the most used words for a given candidate.\\
+Compute the most used words for a given candidate.
+\bigskip
+\begin{figure}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{tabular}{ | c | c |}
+\hline Word & Frequency\\
+\hline
+contre & 1.25\%\\
+gouvernement & 0.49\%\\
+travail & 0.45\%\\
+paris & 0.40\%\\
+droite & 0.38\%\\
+solidarité &  0.38\%\\
+\hline
+\end{tabular}
+\end{column}
 
-\begingroup
-\fontsize{8pt}{12pt}
-\texttt{\\
-(1 word): contre with freq 1.253259924659519\\
-(1 hash): \#npa with freq 11.034004163775156\\
-(2 word): gouvernement with freq 0.4998551144595769\\
-(2 hash): \#loitravail with freq 2.9840388619014573\\
-(3 word): travail with freq 0.4563894523326572\\
-(3 hash): \#grèce with freq 1.7349063150589867\\
-(4 word): paris with freq 0.4056795131845842\\
-(4 hash): \#migrants with freq 1.6655100624566272\\
-(5 word): droite with freq 0.3839466821211243\\
-(5 hash): \#poutou2017 with freq 1.457321304649549\\
-(6 word): solidarité with freq 0.3839466821211243\\
-(6 hash): \#hollande with freq 1.179736294240111\\
-}
-\endgroup
+\begin{column}{0.5\textwidth}
+\begin{tabular}{ | c | c |}
+\hline Hashtag & Frequency\\
+\hline
+\#npa & 11.03\%\\
+\#loitravail & 2.98\%\\
+\#grèce & 1.73\%\\
+\#migrants & 1.66\%\\
+\#poutou2017 & 1.45\%\\
+\#hollande & 1.18\%\\
+\hline
+\end{tabular}
+\end{column}
+\end{columns}
+\bigskip
+\caption{Most used words and hashtags for Phillipe Poutou}
+\end{figure}
 \end{frame}
 
 
@@ -109,55 +129,156 @@ Measure the proportion of words that are different between two set of words $S_1
 \[
 d(S_1, S_2)= \frac{1}{2} \cdot \Big( \sum_{\substack{w \in S_1\\w \notin S_2}}f(w) \quad + \quad \sum_{\substack{w \in S_2\\w \notin S_1}} f(w) \Big) 
 \]
-with $f(x)$ the frequence of the word x.
+where $f(x)$ is the frequency of apparition of the word x.
 \end{block}
 \end{frame}
 
 \begin{frame}{Distance between two candidates}
 \begin{figure}
 
-\includegraphics[height= 0.6\textheight]{distances.png}
+\begin{columns}
+\begin{column}{.8\textwidth}
+\includegraphics[width=\textwidth]{distances.png}
+\end{column}
 
+\begin{column}{.3\textwidth}
 \caption{Sum of the distance to the other candidates, all words on $x$ and hashtags on $y$}
+\end{column}
+\end{columns}
+
 \end{figure}
 \end{frame}
 
 \section{Data Mining}
-\begin{frame}{Kmeans}
-Clustering candidates by similarities between used words and hashtags.
-\bigskip
-\texttt{\\
-Words\\
-Class 0: Poutou Cheminade Arthaud Lassalle Asselineau\\
-Class 1: Melenchon Fillon Hamon Le Pen Macron Dupont-Aignan\\
-\bigskip
-Hashtags\\
-Class: Macron\\
-Class: Melenchon Poutou Fillon Cheminade Hamon Arthaud Le Pen Lassalle Asselineau Dupont-Aignan\\
-}
+\begin{frame}{Kmeans and Hierarchical clustering}
+\begin{columns}
+\begin{column}{.4\textwidth}
+\center 
+\begin{figure}
+\begin{columns}
+\begin{column}{.5\textwidth}
+\center
+Poutou\\
+Cheminade\\
+Arthaud\\
+Lassalle\\
+Asselineau\\
+\end{column}
+
+
+\begin{column}{.5\textwidth}
+\center 
+Melenchon\\
+Fillon\\
+Hamon\\
+Le Pen\\
+Macron\\
+Dupont-Aignan
+\end{column}
+\end{columns}
+\caption{Word Similarities}
+\end{figure}
+\end{column}
+
+
+\vline
+
+\begin{column}{.5\textwidth}
+\center
+\begin{figure}
+\begin{columns}
+\begin{column}{.5\textwidth}
+\center
+Macron
+\end{column}
+
+\begin{column}{.5\textwidth}
+\center
+Melenchon\\
+Poutou\\
+Fillon\\
+Cheminade\\
+Hamon\\
+Arthaud\\
+Le Pen\\
+Lassalle\\
+Asselineau\\
+Dupont-Aignan
+\end{column}
+\end{columns}
+\caption{Tweet Similarities}
+\end{figure}
+\end{column}
+\end{columns}
+
+
 \end{frame}
 
-\begin{frame}{Hierarchical clustering}
-\texttt{\\
-Words\\
-Class 0: Poutou Cheminade Arthaud Lassalle Asselineau\\
-Class 1: Melenchon Fillon Hamon Le Pen Macron Dupont-Aignan\\
+\begin{frame}{Variation over time}
+Using Hierarchical clustering on hashtags.
 \bigskip
-Hashtags\\
-Class: Macron\\
-Class: Melenchon Poutou Fillon Cheminade Hamon Arthaud Le Pen Lassalle Asselineau Dupont-Aignan\\
-}
-\end{frame}
 
-\begin{frame}{Evolution over time}
-\begin{block}{}
-Cluster the candidates for some time periods:
-\begin{itemize}
-\item before and after the begining presidential campaign.
-\item during the first and the second part of the presidential campaign.
-\item before and after some important event.
-\end{itemize}
-\end{block}
+\begin{columns}
+\begin{column}{.4\textwidth}
+\center 
+\begin{figure}
+\begin{columns}
+\begin{column}{.5\textwidth}
+\center
+Fillon\\
+Le Pen\\
+Macron\\
+Asselineau\\
+Dupont-Aignan
+\end{column}
+
+
+\begin{column}{.5\textwidth}
+\center 
+Melenchon\\
+Poutou\\
+Cheminade\\
+Hamon\\
+Arthaud\\
+Lassalle\\
+\end{column}
+\end{columns}
+\caption{Before the campaign}
+\end{figure}
+\end{column}
+
+
+\vline
+
+\begin{column}{.5\textwidth}
+\center
+\begin{figure}
+\begin{columns}
+\begin{column}{.5\textwidth}
+\center
+Melenchon\\
+Fillon\\
+Hamon\\
+Le Pen\\
+Macron
+\end{column}
+
+\begin{column}{.5\textwidth}
+\center
+Poutou\\
+Cheminade\\
+Arthaud\\
+Lassalle\\
+Asselineau\\
+Dupont-Aignan
+\end{column}
+\end{columns}
+\caption{During the campaign}
+\end{figure}
+\end{column}
+\end{columns}
+
+
 \end{frame}
 
 \begin{frame}{A priori algorithm}
@@ -180,7 +301,7 @@ Rule: ('élection',) $\to$ ('dupontaignan', 'dlf\_officiel') , 0.556\\
 
 \begin{itemize}
 \item Lots of auto-citations
-\item Very few real political expressions, except "Front National"
+\item Very few real expressions for the main candidates, except ``Front National''
 \end{itemize}
 \end{frame}
 

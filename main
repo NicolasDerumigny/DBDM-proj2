@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.feature_extraction.text import HashingVectorizer
 #import tweepy
 #from tweepy import OAuthHandler
 import json
@@ -53,6 +54,8 @@ candidate_to_id={"JLMelenchon":0,
 	"jeanlassalle": 8,
 	"UPR_Asselineau": 9,
 	"dupontaignan": 10}
+
+stopwords=["a", "à", "alors", "au", "aucuns", "aussi", "autre", "avant", "avec", "avoir", "bon", "car", "ce", "cela", "ces", "ceux", "chaque", "ci", "comme", "comment", "dans", "des", "du", "dedans", "dehors", "depuis", "devrait", "doit", "donc", "dos", "début", "elle", "elles", "en", "encore", "essai", "est", "et", "eu", "fait", "faites", "fois", "font", "hors", "ici", "il", "ils", "je	juste", "la", "le", "les", "leur", "là", "ma", "maintenant", "mais", "mes", "mine", "moins", "mon", "mot", "même", "ni", "nommés", "notre", "nous", "ou", "où", "par", "parce", "pas", "peut", "peu", "plupart", "pour", "pourquoi", "quand", "que", "quel", "quelle", "quelles", "quels", "qui", "sa", "sans", "ses", "seulement", "si", "sien", "son", "sont", "sous", "soyez	sujet", "sur", "t", "ta", "tandis", "tellement", "tels", "tes", "ton", "tous", "tout", "trop", "très", "tu", "voient", "vont", "votre", "vous", "vu", "ça", "étaient", "état", "étions", "été", "être", "http", "https", "co", "d", "de", "n", "qu", "un", "une", "se", "suis", "rt", "on", "ne", "l", "je", "ai", "j", "via"]
 
 data=dict()
 
@@ -170,7 +173,7 @@ def load_num_freq_candidate(time_min, time_max, freq_words, nb_words, hashtag, n
 						hashtag[candidate][word]=1
 					nb_hash[candidate]+=1
 
-				if len(word)>4 and word not in {"notre", "votre", "https", "faire", "cette"}:
+				if word not in stopwords:
 					tweet_interesting_words+=[word]
 					nb_words[candidate]+=1
 					if word in freq_words[candidate]:

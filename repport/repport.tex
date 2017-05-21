@@ -44,6 +44,7 @@
 \begin{titlepage}
 \end{titlepage}
 
+\newpage
 \section{Introduction}
 
 Dataset: more than 3`000 tweets of the 11 French presidential election candidates.
@@ -54,14 +55,14 @@ We have choose to keep only relevant words, a lot of very used words do not brin
 We have also distinguish hashtags and other words as they do not have the same meaning in a tweet.
 Because semantic of words is really context dependant and difficult to process we have choose to not consider it. 
  
+\newpage
 \subsection{Simple Data}
 Our firts idea has been to compute frequencies of each word and each hashtag for each candidate.
 For a lot of candidate the few most frequent words confirm the view that we have about their opinions. 
-We can see it with Philippe Poutou.
+We can see it with Philippe Poutou (cf images \ref{fig:image1}).
 
 
 \begin{figure}
-\label{fig:image1}
 \begin{center}
 \begin{multicols}{2}
 \begin{tabular}{ | c | c |}
@@ -89,10 +90,11 @@ solidarité &  0.38\%\\
 \end{tabular}
 \end{multicols}
 \bigskip
-\caption{Most used words and hashtags for Phillipe Poutou}
+\captionof{figure}{\label{fig:image1} Most used words and hashtags for Phillipe Poutou}
 \end{center}
 \end{figure}
 
+\newpage
 \section{Distance}
 \theoremstyle{definition}
 \begin{definition}{\bf Distance bewteen two sets of words\\}
@@ -105,13 +107,13 @@ where $f(x)$ is the frequency of apparition of the word x.
 
 In that way we can compute the distance in words and the distance in hastags between two candidates.
 \begin{figure}
-\label{fig:image2}
 \includegraphics[width=\textwidth]{distances.png}
-\caption{Sum of the distance to the other candidates, all words on $x$ and hashtags on $y$}
+\captionof{figure}{\label{fig:image2} Sum of the distance to the other candidates, all words on $x$ and hashtags on $y$}
 \end{figure}
 
-It is interresting to see that Emmanuel Macron is the most different in hashtags.
+It is interresting to see that Emmanuel Macron is the most different in hashtags (cf images \ref{fig:image2}).
 
+\newpage
 \section{Data Mining}
 \subsection{Kmeans and Hierarchical clustering}
 We have implemented k-means and Hierarchical clustering.
@@ -121,7 +123,6 @@ For two clusters weobtain the same result with both methods.
 \begin{figure}
 \begin{center}
 \begin{multicols}{2}
-\label{fig:image3}
 \begin{tabular}{ | c | c |}
 \hline
 Poutou & Melenchon\\
@@ -132,7 +133,7 @@ Asselineau & Macron\\
 & Dupont-Aignan\\
 \hline
 \end{tabular}
-\caption{Words Similarities}
+\captionof{figure}{\label{fig:image3} Words Similarities}
 \bigskip
 
 \begin{tabular}{ | c | c |}
@@ -150,20 +151,20 @@ Marcon & Melenchon\\
 \hline
 \end{tabular}
 \bigskip
-\caption{Hashtags Similarities}
+\captionof{figure}{\label{fig:image4} Hashtags Similarities}
 \end{multicols}
 \end{center}
 \end{figure}
 
-We can find that for the words there is a repartition minor/leading candidates and that for the hashtags Macron is alone.
+We can find that for the words there is a repartition minor/leading candidates and that for the hashtags Macron is alone (cf images \ref{fig:image3} and \ref{fig:image4}).
 
+\newpage
 \subsection{Variation over time}
 We have observed this partition for different periods, since our data cover a few years.
 
 \begin{figure}
 \begin{center}
 \begin{multicols}{2}
-\label{fig:image5}
 \begin{tabular}{ | c | c |}
 \hline
 Melenchon & Fillon\\
@@ -174,7 +175,7 @@ Arthaud & Dupont-Aignan\\
 Lassalle \\
 \hline
 \end{tabular}
-\caption{Before the campaign Hierarchical clustering on hashtags}
+\captionof{figure}{\label{fig:image5} Before the campaign Hierarchical clustering on hashtags}
 \bigskip
 
 \begin{tabular}{ | c | c |}
@@ -188,14 +189,40 @@ Macron & Asselineau\\
 \hline
 \end{tabular}
 \bigskip
-\caption{During the campaign Hierarchical clustering on hashtags}
+\captionof{figure}{\label{fig:image6} During the campaign Hierarchical clustering on hashtags}
 \end{multicols}
 \end{center}
 \end{figure}
 
-We can see that before the campaign the clustering if rigth/left candidates but during the campaign it is major/minor candidates.
+We can see that before the campaign the clustering if rigth/left candidates but during the campaign it is major/minor candidates (cf images \ref{fig:image5} and \ref{fig:image6}).
 
 
+\newpage
+\subsection{A priori algorithm}
+We have done the a priori algorithm.
+
+\begin{figure}
+\begingroup
+\fontsize{9pt}{12pt}
+\texttt{\\
+Rule: ('\#fillon',) $\to$ ('français', 'dupontaignan') , 0.149\\
+Rule: ('\#fillon', 'dlf\_officiel') $\to$ ('\#macron',) , 0.222\\
+Rule: ('\#fillon', 'dlf\_officiel') $\to$ ('dupontaignan',) , 0.988\\
+Rule: ('\#le79inter',) $\to$ ('dupontaignan',) , 1.000\\
+Rule: ('\#legrandjury',) $\to$ ('dupontaignan',) , 1.000\\
+...\\
+Rule: ('judiciaire',) $\to$ ('casier',) , 0.937\\
+Rule: ('judiciaire',) $\to$ ('vierge',) , 0.875\\
+Rule: ('judiciaire',) $\to$ ('vierge', 'casier') , 0.875\\
+Rule: ('élection',) $\to$ ('dupontaignan', 'dlf\_officiel') , 0.556\\
+}
+\endgroup
+\captionof{figure}{\label{fig:image7}Use of the a priori algorithm}
+\end{figure}
+
+We have observed that there is a huge number of auto-citations and very few real expressions for the main candidates, except ``Front National''(cf images \ref{fig:image7}).
+
+\newpage
 \section{Observations}
 The drowback of not using semantic is that there is no link between words with the same meaning, and even between singular and plural words.
 

@@ -36,29 +36,26 @@
 
 %opening
 \title{French Presidential Election Candidates Tweets}
-\author{Nicolas Derumigny Emma Kerinec \\ }
+\author{Nicolas Derumigny \and Emma Kerinec \\ }
 
 \begin{document}
 
-\makeatletter
-\begin{titlepage}
-\end{titlepage}
+\maketitle
 
 \newpage
 \section{Introduction}
-
-Dataset: more than 3`000 tweets of the 11 French presidential election candidates.
+We have worked on a dataset of more than 3`000 tweets of the 11 French presidential election candidates posted during few years.
 We have worked in Python and used package: Sklearn, Numpy, Matplotlib.
 
 \section{Preprocessing}
-We have choose to keep only relevant words, a lot of very used words do not bring any information (e.g. "le").
+We have choose to keep only relevant words, in order to not give any power to a lot of very used words that do not bring any information (e.g. "le").
 We have also distinguish hashtags and other words as they do not have the same meaning in a tweet.
-Because semantic of words is really context dependant and difficult to process we have choose to not consider it. 
+Because meaning of words is really context dependant and difficult to process we have choose to not consider semantic. 
  
 \newpage
 \subsection{Simple Data}
 Our firts idea has been to compute frequencies of each word and each hashtag for each candidate.
-For a lot of candidate the few most frequent words confirm the view that we have about their opinions. 
+We have seen that for a lot of candidates the few most frequent words confirm the view that people usually have about their opinions. 
 We can see it with Philippe Poutou (cf images \ref{fig:image1}).
 
 
@@ -97,7 +94,7 @@ solidarité &  0.38\%\\
 \newpage
 \section{Distance}
 \theoremstyle{definition}
-\begin{definition}{\bf Distance bewteen two sets of words\\}
+\begin{definition}{\bf Distance bewteen two sets of words:\\}
 Measure the proportion of words that are different between two set of words $S_1$ and $S_2$:
 \[
 d(S_1, S_2)= \frac{1}{2} \cdot \Big( \sum_{\substack{w \in S_1\\w \notin S_2}}f(w) \quad + \quad \sum_{\substack{w \in S_2\\w \notin S_1}} f(w) \Big) 
@@ -105,19 +102,20 @@ d(S_1, S_2)= \frac{1}{2} \cdot \Big( \sum_{\substack{w \in S_1\\w \notin S_2}}f(
 where $f(x)$ is the frequency of apparition of the word x.
 \end{definition}
 
-In that way we can compute the distance in words and the distance in hastags between two candidates.
+In that way we can compute the distance with respect to words and the distance with respect to hastags between two candidates.
+
 \begin{figure}
 \includegraphics[width=\textwidth]{distances.png}
 \captionof{figure}{\label{fig:image2} Sum of the distance to the other candidates, all words on $x$ and hashtags on $y$}
 \end{figure}
 
-It is interresting to see that Emmanuel Macron is the most different in hashtags (cf images \ref{fig:image2}).
+It is interresting to see that Emmanuel Macron is the most different in hashtags and that Marine LePen et Jean-Luc Melechon often seen as extreme candidates are really common in the sense of the words they use (cf images \ref{fig:image2}).
 
 \newpage
 \section{Data Mining}
 \subsection{Kmeans and Hierarchical clustering}
-We have implemented k-means and Hierarchical clustering.
-For two clusters weobtain the same result with both methods.
+In order to partition candidates we have implemented k-means and Hierarchical clustering.
+For two clusters on all tweets we obtain the same result with both methods (cf images \ref{fig:image3} and \ref{fig:image4}).
 
 
 \begin{figure}
@@ -160,7 +158,7 @@ We can find that for the words there is a repartition minor/leading candidates a
 
 \newpage
 \subsection{Variation over time}
-We have observed this partition for different periods, since our data cover a few years.
+We have observed similar partitions for different periods, since our data cover a few years.
 
 \begin{figure}
 \begin{center}
@@ -175,7 +173,7 @@ Arthaud & Dupont-Aignan\\
 Lassalle \\
 \hline
 \end{tabular}
-\captionof{figure}{\label{fig:image5} Before the campaign Hierarchical clustering on hashtags}
+\captionof{figure}{\label{fig:image5} Hierarchical clustering on hashtags before the campaign}
 \bigskip
 
 \begin{tabular}{ | c | c |}
@@ -189,17 +187,17 @@ Macron & Asselineau\\
 \hline
 \end{tabular}
 \bigskip
-\captionof{figure}{\label{fig:image6} During the campaign Hierarchical clustering on hashtags}
+\captionof{figure}{\label{fig:image6} Hierarchical clustering on hashtags during the campaign}
 \end{multicols}
 \end{center}
 \end{figure}
 
-We can see that before the campaign the clustering if rigth/left candidates but during the campaign it is major/minor candidates (cf images \ref{fig:image5} and \ref{fig:image6}).
+We can see that before the campaign the clustering is rigth/left candidates but during the campaign it is major/minor candidates (cf images \ref{fig:image5} and \ref{fig:image6}). We can observe this evolution during the campaign by devided it in some periods.
 
 
 \newpage
 \subsection{A priori algorithm}
-We have done the a priori algorithm.
+We have use the a priori algorithm in order to see the most frequent words associations for each candidate.
 
 \begin{figure}
 \begingroup
@@ -224,7 +222,10 @@ We have observed that there is a huge number of auto-citations and very few real
 
 \newpage
 \section{Observations}
-The drowback of not using semantic is that there is no link between words with the same meaning, and even between singular and plural words.
+We have been surprised that Emmanuel Macron who win the election extremly distinguish himself in the use of hashtags but not a lot in the use of words.
+It has also been interresting to see that the distinction rigth/left is present during common periods but erase in favor of a partition minor/major candidates during the campaign.
+It is important too to notice that the number of auto-citation and citation of other candidates is extremly important.
+However, we have to deal the drawback of not using semantic indeed there is no link between different words with the same meaning, and even between singular and plural words.
 
 
 \end{document}

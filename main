@@ -80,11 +80,14 @@ def collect_data():
 
 def main():
 	load_data()
+	files_name=create_files(2, 10)
+	token_matrix=HashingVectorizer(files_name)
+	print(token_matrix[0])
 	#mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
 	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
-	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 	"""freq_words=[dict() for i in id_to_candidates]
 	nb_words=[0 for i in id_to_candidates]
 	hashtag=[dict() for i in id_to_candidates]
@@ -143,8 +146,27 @@ def load_data():
 		print(".", end="")
 		sys.stdout.flush()
 		data[candidate]=json.load(myfile)
-	print("\nLoaded!\n")
 	return 0
+
+
+def create_files(num_candidate, number_tweet):
+	files_name=[]
+	for candidate in range(num_candidate) :
+		lst_cand=[]
+		num_tweet=data[id_to_candidates[candidate]]["nb"]
+		for tweet_id in range(number_tweet):
+			fichier = open(str(candidate)+"-"+str(tweet_id), "a")
+			files_name += [str(candidate)+"-"+str(tweet_id)]
+			tweet=data[id_to_candidates[candidate]]["tweets"][tweet_id]["full_text"]
+			for carac in ";.?![],():/\"'’@":
+				tweet=tweet.replace(carac ," ")
+			words=tweet.lower().split()
+			tweet_interesting_words=[]
+			for word in words :
+				if word not in stopwords:
+					fichier.write(word)
+					fichier.write(" ")
+			fichier.close()
 
 def load_num_freq_candidate(time_min, time_max, freq_words, nb_words, hashtag, nb_hash, lst_tweet=[]):
 	ntime_max=datetime.strptime(time_max, '%b %d %H:%M:%S %z %Y')
@@ -293,8 +315,6 @@ def print_clustering(dst, dst_hash, nbclusters):
 			if cluster_hash.labels_[j]==i:
 				print(" "+id_to_candidates_pretty[j], end="")
 		print()
-
-
 
 
 if __name__=="__main__":

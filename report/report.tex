@@ -42,19 +42,17 @@
 
 \maketitle
 
-\newpage
 \section{Introduction}
 We have worked on a dataset of more than 3`000 tweets of the 11 French presidential election candidates posted during few years.
-We have worked in Python and used package: Sklearn, Numpy, Matplotlib.
+We have worked in Python 3 and used the following packages: Sklearn, Numpy, Matplotlib.
 
 \section{Preprocessing}
-We have choose to keep only relevant words, in order to not give any power to a lot of very used words that do not bring any information (e.g. "le").
+We have chosen to keep only relevant words, in order to not give any power to a lot of very used words that do not bring any information (e.g. "le"). For that, we used a list of uninterested words (``stopwords''), improved with some specific words like ``https''.
 We have also distinguish hashtags and other words as they do not have the same meaning in a tweet.
 Because meaning of words is really context dependant and difficult to process we have choose to not consider semantic. 
  
-\newpage
 \subsection{Simple Data}
-Our firts idea has been to compute frequencies of each word and each hashtag for each candidate.
+Our first idea has been to compute frequencies of each word and each hashtag for each candidate.
 We have seen that for a lot of candidates the few most frequent words confirm the view that people usually have about their opinions. 
 We can see it with Philippe Poutou (cf images \ref{fig:image1}).
 
@@ -91,7 +89,6 @@ solidarité &  0.38\%\\
 \end{center}
 \end{figure}
 
-\newpage
 \section{Distance}
 \theoremstyle{definition}
 \begin{definition}{\bf Distance bewteen two sets of words:\\}
@@ -156,7 +153,6 @@ Marcon & Melenchon\\
 
 We can find that for the words there is a repartition minor/leading candidates and that for the hashtags Macron is alone (cf images \ref{fig:image3} and \ref{fig:image4}).
 
-\newpage
 \subsection{Variation over time}
 We have observed similar partitions for different periods, since our data cover a few years.
 
@@ -170,7 +166,7 @@ Poutou & Le Pen\\
 Cheminade & Macron\\
 Hamon & Asselineau\\
 Arthaud & Dupont-Aignan\\
-Lassalle \\
+Lassalle & \\
 \hline
 \end{tabular}
 \captionof{figure}{\label{fig:image5} Hierarchical clustering on hashtags before the campaign}
@@ -192,10 +188,9 @@ Macron & Asselineau\\
 \end{center}
 \end{figure}
 
-We can see that before the campaign the clustering is rigth/left candidates but during the campaign it is major/minor candidates (cf images \ref{fig:image5} and \ref{fig:image6}). We can observe this evolution during the campaign by devided it in some periods.
+We can see that before the campaign the clustering is right/left candidates but during the campaign it is major/minor candidates (cf images \ref{fig:image5} and \ref{fig:image6}). We can observe this evolution during the campaign by divided it in some periods.
 
 
-\newpage
 \subsection{A priori algorithm}
 We have use the a priori algorithm in order to see the most frequent words associations for each candidate.
 
@@ -220,11 +215,10 @@ Rule: ('élection',) $\to$ ('dupontaignan', 'dlf\_officiel') , 0.556\\
 
 We have observed that there is a huge number of auto-citations and very few real expressions for the main candidates, except ``Front National''(cf images \ref{fig:image7}).
 
-\newpage
 \section{Observations}
-We have been surprised that Emmanuel Macron who win the election extremly distinguish himself in the use of hashtags but not a lot in the use of words.
-It has also been interresting to see that the distinction rigth/left is present during common periods but erase in favor of a partition minor/major candidates during the campaign.
-It is important too to notice that the number of auto-citation and citation of other candidates is extremly important.
+We have been surprised that Emmanuel Macron who win the election extremely distinguish himself in the use of hashtags but not a lot in the use of words.
+It has also been interesting to see that the distinction rigth/left is present during common periods but erase in favour of a partition minor/major candidates during the campaign.
+It is important too to notice that the number of auto-citation and citation of other candidates is extremely important.
 However, we have to deal the drawback of not using semantic indeed there is no link between different words with the same meaning, and even between singular and plural words.
 
 

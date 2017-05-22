@@ -215,14 +215,12 @@ Rule: ('élection',) $\to$ ('dupontaignan', 'dlf\_officiel') , 0.556\\
 
 We have observed that there is a huge number of auto-citations and very few real expressions for the main candidates, except ``Front National''(cf images \ref{fig:image7}).
 
-\subsection{Data reprensentation}
-Tools like sklearn.feature_extraction.text.CountVectorizer allows us to transform the way data are represented in a matrix
 
 \section{Observations}
 We have been surprised that Emmanuel Macron who win the election extremely distinguish himself in the use of hashtags but not a lot in the use of words.
 It has also been interesting to see that the distinction rigth/left is present during common periods but erase in favour of a partition minor/major candidates during the campaign.
 It is important too to notice that the number of auto-citation and citation of other candidates is extremely important.
 However, we have to deal the drawback of not using semantic indeed there is no link between different words with the same meaning, and even between singular and plural words.
-
+We have also use sklearn.feature_extraction module in order to represent data as a sparse matrix of tokens counts, which is useful for implementing algorithms working on numerical inputs.
 
 \end{document}

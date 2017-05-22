@@ -82,25 +82,9 @@ def collect_data():
 
 def main():
 	load_data()
-	files_name, corpus =create_files(2, 4)
-	vectorizer = CountVectorizer(min_df=1)
-	file=open(files_name[0], "r")
-	corpus = file.read()
-	partofspeach=corpus[0]
-	raw_X = (token_features(tok, partofspeach) for tok in corpus)
-	hasher = FeatureHasher(input_type='string')
-	X = hasher.transform(raw_X)
-	print(X)
+	#files_name, corpus =create_files(1, 20)
+	#print(representation([1000, 3, 4, 16, 28, 28, 100], corpus, files_name))
 
-
-
-	
-	"""X = vectorizer.fit_transform(corpus)
-	analyze = vectorizer.build_analyzer()
-	print(vectorizer.get_feature_names())"""
-
-	#hv = HashingVectorizer()
-	#hv.transform(files_name)
 	#mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
 	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
@@ -114,6 +98,27 @@ def main():
 	load_num_freq_candidate("Jan 1 00:00:00 +0000 2012", "May 07 00:00:00 +0000 2017", freq_words, nb_words, hashtag, nb_hash, lst_tweet=[])
 	dst, dst_hash=compute_distances_all(freq_words, nb_words, hashtag, nb_hash)
 	print_clustering(dst, dst_hash, 2)"""
+
+def representation(input, corpus, files_name):
+	"""print(corpus)
+	print(len(corpus))
+	partofspeach=corpus
+	raw_X = (token_features(tok, partofspeach) for tok in corpus)
+	hasher = FeatureHasher(input_type='string')
+	X = hasher.transform(raw_X)
+	print(X)"""
+
+
+
+	vectorizer = CountVectorizer(min_df=1)
+	vectorizer.fit_transform(corpus)
+	analyze = vectorizer.build_analyzer()
+	#print( X.toarray())
+	#print(vectorizer.transform(['France']).toarray())
+	sparse_input = [1 if i in input else 0 for i in range(0, len(vectorizer.vocabulary_))]
+	return(vectorizer.inverse_transform(sparse_input))
+
+
 
 def token_features(token, part_of_speech):
     if token.isdigit():

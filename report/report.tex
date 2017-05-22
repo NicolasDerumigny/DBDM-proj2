@@ -197,23 +197,73 @@ We have use the a priori algorithm in order to see the most frequent words assoc
 \begin{figure}
 \begingroup
 \fontsize{9pt}{12pt}
-\texttt{\\
-Rule: ('\#fillon',) $\to$ ('français', 'dupontaignan') , 0.149\\
-Rule: ('\#fillon', 'dlf\_officiel') $\to$ ('\#macron',) , 0.222\\
-Rule: ('\#fillon', 'dlf\_officiel') $\to$ ('dupontaignan',) , 0.988\\
-Rule: ('\#le79inter',) $\to$ ('dupontaignan',) , 1.000\\
-Rule: ('\#legrandjury',) $\to$ ('dupontaignan',) , 1.000\\
-...\\
-Rule: ('judiciaire',) $\to$ ('casier',) , 0.937\\
-Rule: ('judiciaire',) $\to$ ('vierge',) , 0.875\\
-Rule: ('judiciaire',) $\to$ ('vierge', 'casier') , 0.875\\
-Rule: ('élection',) $\to$ ('dupontaignan', 'dlf\_officiel') , 0.556\\
+\texttt{ 
+Melenchon\\
+item: ('c',) , 0.120\\
+Poutou\\
+item: ('\#poutou2017',) , 0.140\\
+item: ('c',) , 0.112\\
+item: ('soir',) , 0.105\\
+Fillon\\
+item: ('fillon2017\_fr',) , 0.129\\
+item: ('france',) , 0.114\\
+item: ('francoisfillon',) , 0.184\\
+item: ('veux',) , 0.105\\
+Cheminade\\
+item: ('\#cheminade2017',) , 0.422\\
+item: ('\#cheminade2017', 'jcheminade') , 0.182\\
+item: ('\#presidentielle2017',) , 0.137\\
+item: ('jcheminade',) , 0.412\\
+Hamon\\
+item: ('veux',) , 0.101\\
+Arthaud\\
+item: ('c',) , 0.132\\
+item: ('lutteouvriere',) , 0.112\\
+item: ('lutteouvriere', 'n\_arthaud') , 0.102\\
+item: ('n\_arthaud',) , 0.592\\
+Le Pen\\
+item: ('\#debattf1',) , 0.109\\
+item: ('\#debattf1', '\#legranddebat') , 0.106\\
+item: ('\#legranddebat',) , 0.108\\
+item: ('france',) , 0.112\\
+item: ('francais',) , 0.113\\
+item: ('nos',) , 0.100\\
+Macron\\
+item: ('c',) , 0.123\\
+Lassalle\\
+item: ('\#presidentielle2017',) , 0.330\\
+item: ('france',) , 0.106\\
+item: ('jean',) , 0.109\\
+item: ('jeanlassalle',) , 0.249\\
+item: ('lassalle',) , 0.115\\
+Asselineau\\
+item: ('\#asselineau2017',) , 0.240\\
+item: ('\#frexit',) , 0.229\\
+item: ('\#frexit', '\#asselineau2017') , 0.161\\
+item: ('\#presidentielle2017',) , 0.120\\
+item: ('asselineau',) , 0.207\\
+item: ('francois',) , 0.207\\
+item: ('francois', 'asselineau') , 0.180\\
+item: ('upr\_asselineau',) , 0.229\\
+Dupont-Aignan\\
+item: ('\#nda2017',) , 0.129\\
+item: ('\#nda2017', 'dlf\_officiel') , 0.117\\
+item: ('dlf\_officiel',) , 0.677\\
+item: ('dupontaignan',) , 0.801\\
+item: ('dupontaignan', '\#nda2017') , 0.121\\
+item: ('dupontaignan', '\#nda2017', 'dlf\_officiel') , 0.116\\
+item: ('dupontaignan', 'dlf\_officiel') , 0.660\\
+item: ('dupontaignan', 'nicolas') , 0.145\\
+item: ('dupontaignan', 'nicolas', 'dlf\_officiel') , 0.127\\
+item: ('francais',) , 0.108\\
+item: ('nicolas',) , 0.160\\
+item: ('nicolas', 'dlf\_officiel') , 0.127\\
 }
 \endgroup
 \captionof{figure}{\label{fig:image7}Use of the a priori algorithm}
 \end{figure}
 
-We have observed that there is a huge number of auto-citations and very few real expressions for the main candidates, except ``Front National''(cf images \ref{fig:image7}).
+We have observed that there is a huge number of auto-citations and a difference in the number of items for each candidates (cf images \ref{fig:image7}).
 
 
 \section{Observations}
@@ -221,5 +271,6 @@ We have been surprised that Emmanuel Macron who win the election extremely disti
 It has also been interesting to see that the distinction rigth/left is present during common periods but erase in favour of a partition minor/major candidates during the campaign.
 It is important too to notice that the number of auto-citation and citation of other candidates is extremely important.
 However, we have to deal the drawback of not using semantic indeed there is no link between different words with the same meaning, and even between singular and plural words.
+We have also use the sklearn.feature\_extraction module in order to represent data as a sparse matrix of tokens. Sadly, we could only measure similarities between candidates without further explanation, as the original meaning of te tweet is lost.
 
 \end{document}

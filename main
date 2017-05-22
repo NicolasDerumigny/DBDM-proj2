@@ -83,13 +83,12 @@ def collect_data():
 def main():
 	load_data()
 	#files_name, corpus =create_files(1, 20)
-	#print(representation([1000, 3, 4, 16, 28, 28, 100], corpus, files_name))
 
 	#mining_from_time_partition(["Jan 1 00:00:00 +0000 2012", "Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
 	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "Mar 01 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 
-	#mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
+	mining_from_time_partition(["Jan 30 00:00:00 +0000 2017", "May 07 00:00:00 +0000 2017"])
 	"""freq_words=[dict() for i in id_to_candidates]
 	nb_words=[0 for i in id_to_candidates]
 	hashtag=[dict() for i in id_to_candidates]
@@ -98,20 +97,6 @@ def main():
 	load_num_freq_candidate("Jan 1 00:00:00 +0000 2012", "May 07 00:00:00 +0000 2017", freq_words, nb_words, hashtag, nb_hash, lst_tweet=[])
 	dst, dst_hash=compute_distances_all(freq_words, nb_words, hashtag, nb_hash)
 	print_clustering(dst, dst_hash, 2)"""
-
-
-def token_features(token, part_of_speech):
-    if token.isdigit():
-        yield "numeric"
-    else:
-        yield "token={}".format(token.lower())
-        yield "token,pos={},{}".format(token, part_of_speech)
-    if token[0].isupper():
-        yield "uppercase_initial"
-    if token.isupper():
-        yield "all_uppercase"
-    yield "pos={}".format(part_of_speech)
-
 
 
 def mining_from_time_partition(date):	
@@ -126,7 +111,7 @@ def mining_from_time_partition(date):
 		dst=[]
 		dst_hash=[]
 		for i in range(NUMBER_CANDIDATES):
-			items, rules=ap.runApriori(lst_tweet[i], 0.01, 0.1)
+			items, rules=ap.runApriori(lst_tweet[i], 0.10, 0.1)
 			print()
 			print(id_to_candidates_pretty[i])
 			ap.printResults(items, rules)
@@ -275,23 +260,34 @@ def compute_sum_distance_all(freq_words, nb_words, hashtag, nb_hash):
 			dst_hash_sum[candidate1]+=compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)
 	return(dst_sum, dst_hash_sum)
 
+
+def token_features(token, part_of_speech):
+    if token.isdigit():
+        yield "numeric"
+    else:
+        yield "token={}".format(token.lower())
+        yield "token,pos={},{}".format(token, part_of_speech)
+    if token[0].isupper():
+        yield "uppercase_initial"
+    if token.isupper():
+        yield "all_uppercase"
+    yield "pos={}".format(part_of_speech)
+
+
 def representation(input, corpus, files_name):
 	#some experiments about representing data as sparce matrix of token counts
-	"""print(corpus)
-	print(len(corpus))
-	partofspeach=corpus
+	#give a list as imput for having corresponding words
+	
+
+	"""partofspeach=corpus
 	raw_X = (token_features(tok, partofspeach) for tok in corpus)
 	hasher = FeatureHasher(input_type='string')
 	X = hasher.transform(raw_X)
 	print(X)"""
 
-
-
 	vectorizer = CountVectorizer(min_df=1)
 	vectorizer.fit_transform(corpus)
 	analyze = vectorizer.build_analyzer()
-	#print( X.toarray())
-	#print(vectorizer.transform(['France']).toarray())
 	sparse_input = [1 if i in input else 0 for i in range(0, len(vectorizer.vocabulary_))]
 	return(vectorizer.inverse_transform(sparse_input))
 

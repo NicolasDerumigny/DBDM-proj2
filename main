@@ -99,26 +99,6 @@ def main():
 	dst, dst_hash=compute_distances_all(freq_words, nb_words, hashtag, nb_hash)
 	print_clustering(dst, dst_hash, 2)"""
 
-def representation(input, corpus, files_name):
-	"""print(corpus)
-	print(len(corpus))
-	partofspeach=corpus
-	raw_X = (token_features(tok, partofspeach) for tok in corpus)
-	hasher = FeatureHasher(input_type='string')
-	X = hasher.transform(raw_X)
-	print(X)"""
-
-
-
-	vectorizer = CountVectorizer(min_df=1)
-	vectorizer.fit_transform(corpus)
-	analyze = vectorizer.build_analyzer()
-	#print( X.toarray())
-	#print(vectorizer.transform(['France']).toarray())
-	sparse_input = [1 if i in input else 0 for i in range(0, len(vectorizer.vocabulary_))]
-	return(vectorizer.inverse_transform(sparse_input))
-
-
 
 def token_features(token, part_of_speech):
     if token.isdigit():
@@ -295,7 +275,25 @@ def compute_sum_distance_all(freq_words, nb_words, hashtag, nb_hash):
 			dst_hash_sum[candidate1]+=compute_hashtag_distance(candidate1, candidate2, freq_words, nb_words, hashtag, nb_hash)
 	return(dst_sum, dst_hash_sum)
 
+def representation(input, corpus, files_name):
+	#some experiments about representing data as sparce matrix of token counts
+	"""print(corpus)
+	print(len(corpus))
+	partofspeach=corpus
+	raw_X = (token_features(tok, partofspeach) for tok in corpus)
+	hasher = FeatureHasher(input_type='string')
+	X = hasher.transform(raw_X)
+	print(X)"""
 
+
+
+	vectorizer = CountVectorizer(min_df=1)
+	vectorizer.fit_transform(corpus)
+	analyze = vectorizer.build_analyzer()
+	#print( X.toarray())
+	#print(vectorizer.transform(['France']).toarray())
+	sparse_input = [1 if i in input else 0 for i in range(0, len(vectorizer.vocabulary_))]
+	return(vectorizer.inverse_transform(sparse_input))
 
 def show_distance(freq_words, nb_words, hashtag, nb_hash):
 	x=[0]*NUMBER_CANDIDATES
